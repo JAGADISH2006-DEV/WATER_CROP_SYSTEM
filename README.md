@@ -267,3 +267,19 @@ Free to use, modify, and extend for education, research, and industrial projects
 │ IN  : ON   ●           │
 │ OUT : OFF  ○           │
 └────────────────────────┘
+
+**PIN CONNECTION**
+
+| Board Pin Name | GPIO No. | Connected Device          | Purpose in Code      |
+| -------------- | -------- | ------------------------- | -------------------- |
+| **D21**        | GPIO 21  | OLED SDA                  | I2C Data             |
+| **D22**        | GPIO 22  | OLED SCL                  | I2C Clock            |
+| **D32**        | GPIO 32  | Rotary Encoder CLK        | Encoder interrupt    |
+| **D33**        | GPIO 33  | Rotary Encoder DT         | Encoder direction    |
+| **D26**        | GPIO 26  | Encoder Push Button       | MODE button          |
+| **D34**        | GPIO 34  | Soil Moisture Sensor (AO) | Analog soil input    |
+| **D27**        | GPIO 27  | Water Level Sensor (DO)   | Digital water detect |
+| **D2**         | GPIO 2   | AUTO Mode LED             | AUTO indicator       |
+| **D4**         | GPIO 4   | MANUAL Mode LED           | MANUAL indicator     |
+| **3V3**        | —        | OLED / Sensors / Encoder  | Power                |
+| **GND**        | —        | All modules               | Common ground        |
