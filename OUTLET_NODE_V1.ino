@@ -1,8 +1,9 @@
+OUTLET NODE
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 
-#define RELAY_PIN D1
-#define LED_PIN   LED_BUILTIN   // ACTIVE LOW
+#define RELAY_PIN D5
+#define LED_PIN   LED_BUILTIN
 #define AP_SSID   "WATERSYSTEM"
 #define AP_PASS   "12345678"
 
@@ -19,35 +20,23 @@ inline void valveOpenFn() {
   valveOpen = true;
 }
 
-void connectWiFi() {
-  WiFi.mode(WIFI_STA);
-  pinMode(LED_PIN, OUTPUT);
+void ensureWiFi() {
+  if (WiFi.status() == WL_CONNECTED) return;
 
-  while (WiFi.status() != WL_CONNECTED) {
-    digitalWrite(LED_PIN, LOW); delay(200);
-    digitalWrite(LED_PIN, HIGH); delay(800);
-
-    int n = WiFi.scanNetworks();
-    for (int i = 0; i < n; i++) {
-      if (WiFi.SSID(i) == AP_SSID) {
-        WiFi.begin(AP_SSID, AP_PASS);
-        while (WiFi.status() != WL_CONNECTED) {
-          digitalWrite(LED_PIN, LOW); delay(100);
-          digitalWrite(LED_PIN, HIGH); delay(100);
-        }
-        digitalWrite(LED_PIN, LOW);
-        return;
-      }
-    }
-  }
+  WiFi.begin(AP_SSID, AP_PASS);
+  unsigned long t0 = millis();
+  while (WiFi.status() != WL_CONNECTED && millis() - t0 < 5000)
+    delay(100);
 }
 
 void setup() {
   Serial.begin(115200);
   pinMode(RELAY_PIN, OUTPUT);
+  pinMode(LED_PIN, OUTPUT);
   valveClose();
 
-  connectWiFi();
+  WiFi.mode(WIFI_STA);
+  ensureWiFi();
 
   server.on("/open", []() {
     valveOpenFn();
@@ -63,7 +52,7 @@ void setup() {
 }
 
 void loop() {
+  ensureWiFi();
   server.handleClient();
-  if (WiFi.status() != WL_CONNECTED)
-    digitalWrite(LED_PIN, HIGH);
+  digitalWrite(LED_PIN, WiFi.status() == WL_CONNECTED ? LOW : HIGH);
 }
