@@ -290,10 +290,11 @@ void controlTask(void *pv) {
 
   for (;;) {
     xSemaphoreTake(dataMutex, portMAX_DELAY);
+     soil = analogRead(SOIL_PIN);
 
-    soil = analogRead(SOIL_PIN);
-    soilDry  = soil > map(threshold, 0, 100, 400, 3000);
-    waterDry = digitalRead(WATER_LEVEL_PIN) == LOW;
+    // DRY when value is LOW
+    soilDry = soil < 1300;
+     waterDry = digitalRead(WATER_LEVEL_PIN) == LOW;
 
     if (currentMode == OFF)
       inletOpen = false;
